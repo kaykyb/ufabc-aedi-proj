@@ -6,6 +6,6 @@
 #include "../src/lib/example.h"
 
 int main() {
-    assert(add_one(1) == 3);
+    assert(add_one(1) == 2);
     return 0;
 }
