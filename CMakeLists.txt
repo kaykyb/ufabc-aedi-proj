@@ -19,4 +19,11 @@ enable_testing()
 
 add_executable(run_cliente_tests test/cliente_test.c)
 target_link_libraries(run_cliente_tests PRIVATE ufabc_aedi_proj_lib)
-add_test(NAME cliente_test COMMAND run_cliente_tests)
+
+add_test(NAME cliente_teste_criacao               COMMAND run_tests criacao)
+add_test(NAME cliente_teste_atualiza_idade        COMMAND run_tests idade)
+add_test(NAME cliente_teste_atualiza_cnh          COMMAND run_tests cnh)
+add_test(NAME cliente_teste_atualiza_inadimplente COMMAND run_tests inadimplencia)
+add_test(NAME cliente_teste_atualiza_acidentes    COMMAND run_tests acidentes)
+add_test(NAME cliente_teste_atualiza_gastos       COMMAND run_tests gastos)
+add_test(NAME cliente_teste_atualiza_dias         COMMAND run_tests dias)
