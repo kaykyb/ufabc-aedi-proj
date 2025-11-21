@@ -4,7 +4,9 @@
 
 typedef struct cliente Cliente;
 
-Cliente* cliente_cria(char* cpf, int idade, int anos_cnh, bool inadimplente, int acidentes, float gastos, int dias_alugados);
+typedef int (*FuncCategoria)(Cliente*);
+
+Cliente* cliente_cria(char* cpf, int idade, int anos_cnh, bool inadimplente, int acidentes, float gastos, int dias_alugados, FuncCategoria func_categoria);
 void cliente_libera(Cliente* c);
 
 void cliente_atualiza_idade(Cliente* c, int idade);
