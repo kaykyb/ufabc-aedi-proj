@@ -17,6 +17,7 @@ target_link_libraries(ufabc_aedi_proj PRIVATE ufabc_aedi_proj_lib)
 
 enable_testing()
 
+# Cliente
 add_executable(run_cliente_tests test/cliente_test.c)
 target_link_libraries(run_cliente_tests PRIVATE ufabc_aedi_proj_lib)
 
@@ -27,3 +28,14 @@ add_test(NAME cliente_teste_atualiza_inadimplente COMMAND run_cliente_tests inad
 add_test(NAME cliente_teste_atualiza_acidentes    COMMAND run_cliente_tests acidentes)
 add_test(NAME cliente_teste_atualiza_gastos       COMMAND run_cliente_tests gastos)
 add_test(NAME cliente_teste_atualiza_dias         COMMAND run_cliente_tests dias)
+
+# AVL
+add_executable(run_avl_tests test/avl_test.c)
+target_link_libraries(run_avl_tests PRIVATE ufabc_aedi_proj_lib)
+
+add_test(NAME avl_vazia       COMMAND run_avl_tests criacao)
+add_test(NAME avl_insert1     COMMAND run_avl_tests simples)
+add_test(NAME avl_insert3     COMMAND run_avl_tests multipla)
+add_test(NAME avl_rotacao_dir COMMAND run_avl_tests rot_dir)
+add_test(NAME avl_rotacao_esq COMMAND run_avl_tests rot_esq)
+add_test(NAME avl_busca       COMMAND run_avl_tests busca)
