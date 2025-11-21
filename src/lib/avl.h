@@ -4,10 +4,11 @@
 
 typedef bool (*FuncComparacao)(void*, void*);
 typedef char* (*FuncIdentidade)(void*);
+typedef void* (*FuncLiberarInfo)(void*);
 
 typedef struct avl AVL;
 
-AVL* avl_criar(FuncComparacao comparador, FuncIdentidade identidade);
+AVL* avl_criar(FuncComparacao comparador, FuncIdentidade identidade, FuncLiberarInfo liberar_info);
 void avl_liberar(AVL* avl);
 
 void avl_inserir(AVL* avl, void* elem);
