@@ -4,8 +4,6 @@ project(ufabc_aedi_proj C)
 set(CMAKE_C_STANDARD 11)
 
 add_library(ufabc_aedi_proj_lib
-        src/lib/example.c
-        src/lib/example.h
         src/lib/cliente.c
         src/lib/cliente.h
         src/lib/decisao.c
@@ -19,11 +17,6 @@ target_link_libraries(ufabc_aedi_proj PRIVATE ufabc_aedi_proj_lib)
 
 enable_testing()
 
-add_executable(run_tests test/example_test.c)
-target_link_libraries(run_tests PRIVATE ufabc_aedi_proj_lib)
-add_test(NAME example_test COMMAND run_tests)
-
-add_executable(run_cliente_tests
-        test/cliente_test.c)
+add_executable(run_cliente_tests test/cliente_test.c)
 target_link_libraries(run_cliente_tests PRIVATE ufabc_aedi_proj_lib)
 add_test(NAME cliente_test COMMAND run_cliente_tests)

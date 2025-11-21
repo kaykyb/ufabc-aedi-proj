@@ -13,6 +13,6 @@ void avl_liberar(AVL* avl);
 void avl_inserir(AVL* avl, void* elem);
 void* avl_buscar(AVL* avl);
 
-char* avl_representacao_string(AVL* avl);
+char* internal_avl_representacao_string(AVL* avl);
 
 #endif //UFABC_AEDI_PROJ_AVL_H
