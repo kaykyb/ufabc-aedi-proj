@@ -39,3 +39,11 @@ add_test(NAME avl_insert3     COMMAND run_avl_tests multipla)
 add_test(NAME avl_rotacao_dir COMMAND run_avl_tests rot_dir)
 add_test(NAME avl_rotacao_esq COMMAND run_avl_tests rot_esq)
 add_test(NAME avl_busca       COMMAND run_avl_tests busca)
+
+# Decisao
+add_executable(run_decisao_tests test/decisao_test.c)
+target_link_libraries(run_decisao_tests PRIVATE ufabc_aedi_proj_lib)
+
+add_test(NAME decisao_folha      COMMAND run_decisao_tests folha)
+add_test(NAME decisao_simples    COMMAND run_decisao_tests simples)
+add_test(NAME decisao_complexa   COMMAND run_decisao_tests complexa)
