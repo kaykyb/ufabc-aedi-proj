@@ -4,6 +4,19 @@
 
 #include "avl.h"
 
+struct avl_no {
+    struct avl_no* esq;
+    struct avl_no* dir;
+    void* info;
+};
+
+struct avl {
+    FuncComparacao comparador;
+    FuncIdentidade identidade;
+    FuncLiberarInfo liberar_info;
+    struct avl_no* topo;
+};
+
 AVL *avl_criar(FuncComparacao comparador, FuncIdentidade identidade, FuncLiberarInfo liberar_info)
 {
     return NULL;
@@ -19,6 +32,26 @@ void avl_inserir(AVL *avl, void *elem)
 
 void *avl_buscar(AVL *avl, void *identidade)
 {
+    struct avl_no* topo = avl->topo;
+    void* identidade_topo;
+    int comp;
+
+    while (topo) {
+        identidade_topo = avl->identidade(topo->info);
+        comp = avl->comparador(identidade, identidade_topo);
+        free(identidade_topo);
+
+        if (comp == 0) {
+            return topo->info;
+        }
+
+        if (comp == -1) {
+            topo = topo->esq;
+        } else {
+            topo = topo->dir;
+        }
+    }
+
     return NULL;
 }
 
