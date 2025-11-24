@@ -19,17 +19,12 @@ Item *cria_item(int v)
 
 int func_compara(void *pa, void *pb)
 {
-    Item *a = (Item *)pa;
-    Item *b = (Item *)pb;
-
-    if (a->valor > b->valor)
-        return 1;
-    if (a->valor < b->valor)
-        return -1;
-    return 0;
+    char *a = (char *)pa;
+    char *b = (char *)pb;
+    return strcmp(a, b);
 }
 
-char *func_identidade(void *i)
+void *func_identidade(void *i)
 {
     char *str = malloc(20);
     sprintf(str, "%d", ((Item *)i)->valor);

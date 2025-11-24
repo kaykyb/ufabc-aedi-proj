@@ -17,7 +17,7 @@ void avl_inserir(AVL *avl, void *elem)
 {
 }
 
-void *avl_buscar(AVL *avl, char *identidade)
+void *avl_buscar(AVL *avl, void *identidade)
 {
     return NULL;
 }

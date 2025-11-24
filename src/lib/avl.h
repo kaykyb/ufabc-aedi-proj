@@ -3,7 +3,7 @@
 #include <stdbool.h>
 
 typedef int (*FuncComparacao)(void *, void *);
-typedef char *(*FuncIdentidade)(void *);
+typedef void *(*FuncIdentidade)(void *);
 typedef void (*FuncLiberarInfo)(void *);
 
 typedef struct avl AVL;
@@ -12,7 +12,7 @@ AVL *avl_criar(FuncComparacao comparador, FuncIdentidade identidade, FuncLiberar
 void avl_liberar(AVL *avl);
 
 void avl_inserir(AVL *avl, void *elem);
-void *avl_buscar(AVL *avl, char *identidade);
+void *avl_buscar(AVL *avl, void *identidade);
 
 char *internal_avl_representacao_string(AVL *avl);
 
