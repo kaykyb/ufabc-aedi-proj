@@ -1,6 +1,5 @@
 #ifndef UFABC_AEDI_PROJ_AVL_H
 #define UFABC_AEDI_PROJ_AVL_H
-#include <stdbool.h>
 
 typedef int (*FuncComparacao)(void *, void *);
 typedef void *(*FuncIdentidade)(void *);
