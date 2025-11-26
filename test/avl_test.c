@@ -122,6 +122,36 @@ void teste_busca()
     avl_liberar(avl);
 }
 
+void teste_balanceamento_rotacao_dupla_lr()
+{
+    AVL *avl = avl_criar(func_compara, func_identidade, func_libera);
+
+    avl_inserir(avl, cria_item(30));
+
+    avl_inserir(avl, cria_item(10));
+
+    avl_inserir(avl, cria_item(20));
+
+    assert_estrutura(avl, "<20 <10 <> <>> <30 <> <>>>");
+
+    avl_liberar(avl);
+}
+
+void teste_balanceamento_rotacao_dupla_rl()
+{
+    AVL *avl = avl_criar(func_compara, func_identidade, func_libera);
+
+    avl_inserir(avl, cria_item(10));
+
+    avl_inserir(avl, cria_item(30));
+
+    avl_inserir(avl, cria_item(20));
+
+    assert_estrutura(avl, "<20 <10 <> <>> <30 <> <>>>");
+
+    avl_liberar(avl);
+}
+
 int main(int argc, char *argv[])
 {
     if (strcmp(argv[1], "criacao") == 0)
@@ -136,6 +166,10 @@ int main(int argc, char *argv[])
         teste_balanceamento_rotacao_esquerda();
     else if (strcmp(argv[1], "busca") == 0)
         teste_busca();
+    else if (strcmp(argv[1], "rot_lr") == 0)
+        teste_balanceamento_rotacao_dupla_lr();
+    else if (strcmp(argv[1], "rot_rl") == 0)
+        teste_balanceamento_rotacao_dupla_rl();
     else
     {
         printf("Teste desconhecido: %s\n", argv[1]);
