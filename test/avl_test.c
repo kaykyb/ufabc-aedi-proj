@@ -38,7 +38,7 @@ void func_libera(void *i)
 
 void assert_estrutura(AVL *avl, char *esperado)
 {
-    char *real = internal_avl_representacao_string(avl);
+    char *real = avl_representacao_string(avl);
     if (strcmp(real, esperado) != 0)
     {
         fprintf(stderr, "ERRO ESTRUTURAL:\nEsperado: %s\nObtido: %s\n", esperado, real);
