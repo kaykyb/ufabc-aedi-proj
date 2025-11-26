@@ -10,6 +10,6 @@ Decisao *decisao_criar_verificador(FuncVerificador func, Decisao *falso, Decisao
 Decisao *decisao_criar_resultado(void *resultado);
 void decisao_liberar(Decisao *);
 
-void *decisao_classificar(void *entidade);
+void *decisao_classificar(Decisao *arvore, void *entidade);
 
 #endif

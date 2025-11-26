@@ -36,7 +36,7 @@ void teste_folha_unica()
     Decisao *arvore = decisao_criar_resultado(res_aprovado);
 
     Cliente c = {0, true};
-    assert(decisao_classificar(&c) == res_aprovado);
+    assert(decisao_classificar(arvore, &c) == res_aprovado);
 
     decisao_liberar(arvore);
 }
@@ -52,10 +52,10 @@ void teste_decisao_simples()
     Decisao *raiz = decisao_criar_verificador(verifica_score_alto, no_false, no_true);
 
     Cliente c1 = {.score_credito = 800};
-    assert(decisao_classificar(&c1) == res_aprovado);
+    assert(decisao_classificar(raiz, &c1) == res_aprovado);
 
     Cliente c2 = {.score_credito = 600};
-    assert(decisao_classificar(&c2) == res_reprovado);
+    assert(decisao_classificar(raiz, &c2) == res_reprovado);
 
     decisao_liberar(raiz);
 }
@@ -74,9 +74,9 @@ void teste_decisao_complexa()
     Cliente c2 = {600, true};
     Cliente c3 = {400, false};
 
-    assert(strcmp(decisao_classificar(&c1), "SIM") == 0);
-    assert(strcmp(decisao_classificar(&c2), "NAO") == 0);
-    assert(strcmp(decisao_classificar(&c3), "NAO") == 0);
+    assert(strcmp(decisao_classificar(raiz, &c1), "SIM") == 0);
+    assert(strcmp(decisao_classificar(raiz, &c2), "NAO") == 0);
+    assert(strcmp(decisao_classificar(raiz, &c3), "NAO") == 0);
 
     decisao_liberar(raiz);
 }
