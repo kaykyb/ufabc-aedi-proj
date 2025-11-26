@@ -38,6 +38,8 @@ add_test(NAME avl_insert1     COMMAND run_avl_tests simples)
 add_test(NAME avl_insert3     COMMAND run_avl_tests multipla)
 add_test(NAME avl_rotacao_dir COMMAND run_avl_tests rot_dir)
 add_test(NAME avl_rotacao_esq COMMAND run_avl_tests rot_esq)
+add_test(NAME avl_rotacao_lr  COMMAND run_avl_tests rot_lr)
+add_test(NAME avl_rotacao_rl  COMMAND run_avl_tests rot_rl)
 add_test(NAME avl_busca       COMMAND run_avl_tests busca)
 
 # Decisao
