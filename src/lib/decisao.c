@@ -4,48 +4,51 @@
 
 #include "decisao.h"
 
-typedef enum {
+typedef enum
+{
     VERIFICADOR,
     RESULTADO
 } TipoNo;
 
-struct decisao {
+struct decisao
+{
     TipoNo tipo;
 
-    union {
-        struct {
-            FuncVerificador func_verificador;
-            struct decisao *filho_falso;
-            struct decisao *filho_verdadeiro;
-        };
-        
-        void *resultado;
-    };
+    FuncVerificar verificar;
+    struct decisao *filho_falso;
+    struct decisao *filho_verdadeiro;
+
+    void *resultado;
 };
 
-Decisao *decisao_criar_verificador(FuncVerificador func,Decisao *falso, Decisao *verdadeiro) {
-    if (func == NULL) {
+Decisao *decisao_criar_verificador(FuncVerificar verificar, Decisao *falso, Decisao *verdadeiro)
+{
+    if (verificar == NULL)
+    {
         printf("A FuncVerificador não pode ser NULL\n");
         exit(1);
     }
 
     Decisao *no = malloc(sizeof(Decisao));
-    if (no == NULL) {
+    if (no == NULL)
+    {
         printf("Erro: Ocorreu uma falha ao alocar memória\n");
         exit(1);
     }
 
     no->tipo = VERIFICADOR;
-    no->func_verificador = func;
+    no->verificar = verificar;
     no->filho_falso = falso;
     no->filho_verdadeiro = verdadeiro;
 
     return no;
 }
 
-Decisao *decisao_criar_resultado(void *resultado) {
+Decisao *decisao_criar_resultado(void *resultado)
+{
     Decisao *no = malloc(sizeof(Decisao));
-    if (no == NULL) {
+    if (no == NULL)
+    {
         printf("Falha ao alocar memória para nó resultado\n");
         exit(1);
     }
@@ -56,12 +59,13 @@ Decisao *decisao_criar_resultado(void *resultado) {
     return no;
 }
 
-void decisao_liberar(Decisao *no) {
-    if (no == NULL) {
+void decisao_liberar(Decisao *no)
+{
+    if (no == NULL)
         return;
-    }
 
-    if (no->tipo == VERIFICADOR) {
+    if (no->tipo == VERIFICADOR)
+    {
         decisao_liberar(no->filho_falso);
         decisao_liberar(no->filho_verdadeiro);
     }
@@ -69,32 +73,33 @@ void decisao_liberar(Decisao *no) {
     free(no);
 }
 
-static void *decisao_classificar_recursivo(void *entidade, Decisao *no) {
-    if (no == NULL) {
+static void *decisao_classificar_recursivo(void *entidade, Decisao *no)
+{
+    if (no == NULL)
+    {
         printf("Foi encontrado um Nó NULL durante a classificação e isso não está permitido\n");
         exit(1);
     }
 
-    if (no->tipo == RESULTADO) {
+    if (no->tipo == RESULTADO)
         return no->resultado;
-    }
 
-    bool resultado_verificacao = no->func_verificador(entidade);
-
-    if (resultado_verificacao) {
+    if (no->verificar(entidade))
         return decisao_classificar_recursivo(entidade, no->filho_verdadeiro);
-    } else {
-        return decisao_classificar_recursivo(entidade, no->filho_falso);
-    }
+
+    return decisao_classificar_recursivo(entidade, no->filho_falso);
 }
 
-void *decisao_classificar(Decisao *arvore, void *entidade) {
-    if (arvore == NULL) {
+void *decisao_classificar(Decisao *arvore, void *entidade)
+{
+    if (arvore == NULL)
+    {
         printf("Árvore de decisão não pode ser NULL\n");
         exit(1);
     }
 
-    if (entidade == NULL) {
+    if (entidade == NULL)
+    {
         printf("Entidade não pode ser NULL\n");
         exit(1);
     }

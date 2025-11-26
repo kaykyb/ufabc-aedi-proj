@@ -15,4 +15,4 @@ void *avl_buscar(AVL *avl, void *identidade);
 
 char *avl_representacao_string(AVL *avl);
 
-#endif // UFABC_AEDI_PROJ_AVL_H
+#endif

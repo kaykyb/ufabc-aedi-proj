@@ -23,8 +23,14 @@ struct avl
 
 AVL *avl_criar(FuncComparar comparar, FuncGetIdentidade get_identidade, FuncLiberarInfo liberar_info)
 {
+    if (comparar == NULL || get_identidade == NULL || liberar_info == NULL)
+    {
+        printf("As FuncComparar, FuncGetIdentidade e FuncLiberarInfo não podem ser nulas\n");
+        exit(1);
+    }
+
     AVL *avl = malloc(sizeof(AVL));
-    if (!avl)
+    if (avl == NULL)
     {
         printf("Erro: Ocorreu uma falha ao alocar memória\n");
         exit(1);
@@ -40,7 +46,7 @@ AVL *avl_criar(FuncComparar comparar, FuncGetIdentidade get_identidade, FuncLibe
 
 static int avl_altura(struct avl_no *no)
 {
-    if (!no)
+    if (no == NULL)
         return -1;
 
     return no->altura;
@@ -82,15 +88,12 @@ static struct avl_no *avl_rotacao_esquerda(struct avl_no *x)
 // --- BALANCEAMENTO---
 int avl_balanceamento(struct avl_no *no)
 {
-    if (!no)
-        return 0;
-
     return avl_altura(no->esq) - avl_altura(no->dir);
 }
 
 struct avl_no *avl_balancear(struct avl_no *no)
 {
-    if (!no)
+    if (no == NULL)
         return NULL;
 
     no->altura = 1 + max(avl_altura(no->esq), avl_altura(no->dir));
@@ -124,7 +127,7 @@ struct avl_no *avl_balancear(struct avl_no *no)
 // --- INSERÇÃO ---
 static struct avl_no *avl_inserir_recursiva(struct avl_no *no, void *elem, FuncComparar comparar, FuncGetIdentidade get_identidade)
 {
-    if (!no)
+    if (no == NULL)
     {
         struct avl_no *avl = malloc(sizeof(struct avl_no));
         if (!avl)
@@ -215,7 +218,7 @@ static void avl_liberar_recursiva(struct avl_no *no, FuncLiberarInfo liberar_inf
 
 void avl_liberar(AVL *avl)
 {
-    if (!avl)
+    if (avl == NULL)
         return;
 
     avl_liberar_recursiva(avl->topo, avl->liberar_info);
@@ -225,7 +228,7 @@ void avl_liberar(AVL *avl)
 // --- Representação em Texto ---
 static void avl_representacao_string_recursiva(struct avl_no *no, char *buffer, FuncGetIdentidade get_identidade)
 {
-    if (!no)
+    if (no == NULL)
     {
         strcat(buffer, "<>");
         return;
@@ -234,7 +237,7 @@ static void avl_representacao_string_recursiva(struct avl_no *no, char *buffer, 
     strcat(buffer, "<");
 
     char *str_valor = get_identidade(no->info);
-    if (str_valor)
+    if (str_valor != NULL)
     {
         strcat(buffer, str_valor);
         free(str_valor);
@@ -252,7 +255,7 @@ static void avl_representacao_string_recursiva(struct avl_no *no, char *buffer, 
 char *avl_representacao_string(AVL *avl)
 {
     char *s = malloc(sizeof(char) * 512);
-    if (!s)
+    if (s == NULL)
     {
         printf("Erro: Ocorreu uma falha ao alocar memória\n");
         exit(1);
