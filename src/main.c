@@ -5,11 +5,10 @@
 
 #include "lib/avl.h"
 #include "lib/cliente.h"
-#include "lib/decisao.h"
+#include "classificacao.h"
 
 // Armazenamento de Clientes
 static AVL *avl;
-static Decisao *decisao;
 
 int func_compara(void *pa, void *pb)
 {
@@ -20,17 +19,15 @@ int func_compara(void *pa, void *pb)
 
 void *func_get_identidade(void *elem)
 {
-    return cliente_cpf(elem);
+    char *cpf_original = cliente_cpf(elem);
+    char *cpf_copia = malloc(sizeof(char) * 12);
+    strcpy(cpf_copia, cpf_original);
+    return cpf_copia;
 }
 
 void func_libera(void *elem)
 {
     cliente_libera(elem);
-}
-
-int func_get_categoria(Cliente *c)
-{
-    return *(int *)decisao_classificar(decisao, c);
 }
 
 // Helpers
@@ -83,7 +80,6 @@ void visualizar_cliente(Cliente *c)
     printf("Categoria do Cliente: %d\n", cliente_categoria(c));
 
     stop_pressione_continuar();
-    menu();
 }
 
 void adicionar_cliente()
@@ -101,12 +97,14 @@ void adicionar_cliente()
     {
         printf("Erro: CPF invalido.\n");
         stop_pressione_continuar();
+        return;
     }
 
     if (avl_buscar(avl, cpf))
     {
         printf("Erro: Cliente ja existe no banco de dados...");
         stop_pressione_continuar();
+        return;
     };
 
     int idade;
@@ -125,6 +123,7 @@ void adicionar_cliente()
     {
         printf("Erro: Inadimplente deve ser '0' ou '1'...");
         stop_pressione_continuar();
+        return;
     }
 
     int acidentes;
@@ -140,7 +139,7 @@ void adicionar_cliente()
     scanf("%d", &dias_alugados);
     getchar();
 
-    Cliente *c = cliente_cria(cpf, idade, anos_cnh, inadimplente, acidentes, gastos, dias_alugados, func_get_categoria);
+    Cliente *c = cliente_cria(cpf, idade, anos_cnh, inadimplente, acidentes, gastos, dias_alugados, classificacao_get_categoria);
     avl_inserir(avl, c);
 
     visualizar_cliente(c);
@@ -161,21 +160,22 @@ void buscar_cliente()
     {
         printf("Erro: CPF invalido.\n");
         stop_pressione_continuar();
+        return;
     }
 
     Cliente *c = avl_buscar(avl, cpf);
-    if (!c)
+    if (c)
     {
-        printf("Erro: Cliente nao existe no banco de dados.");
-        stop_pressione_continuar();
-    };
+        visualizar_cliente(c);
+        return;
+    }
 
-    visualizar_cliente(c);
+    printf("Erro: Cliente nao existe no banco de dados.");
+    stop_pressione_continuar();
 }
 
 void menu(void)
 {
-
     clear();
     printf("=================================================\n");
     printf("                     UFABCars\n");
@@ -195,104 +195,22 @@ void menu(void)
     if (op == 1)
     {
         adicionar_cliente();
-        return;
     }
-
-    if (op == 2)
+    else if (op == 2)
     {
         buscar_cliente();
-        return;
     }
 
     menu();
-}
-
-// Funcoes de verificacao
-bool verifica_elite(void *elem)
-{
-    Cliente *c = (Cliente *)elem;
-    return cliente_gastos(c) > 500000;
-}
-
-bool verifica_inadimplente(void *elem)
-{
-    Cliente *c = (Cliente *)elem;
-    return cliente_inadimplente(c);
-}
-
-bool verifica_acidentes(void *elem)
-{
-    Cliente *c = (Cliente *)elem;
-    return cliente_acidentes(c) > 0;
-}
-
-bool verifica_idade(void *elem)
-{
-    Cliente *c = (Cliente *)elem;
-    return cliente_idade(c) > 25;
-}
-
-bool verifica_gasto_anual(void *elem)
-{
-    Cliente *c = (Cliente *)elem;
-    return cliente_gastos(c) > 10000;
-}
-
-bool verifica_anos_cnh(void *elem)
-{
-    Cliente *c = (Cliente *)elem;
-    return cliente_anos_cnh(c) > 5;
-}
-
-bool verifica_alugou(void *elem)
-{
-    Cliente *c = (Cliente *)elem;
-    return cliente_dias_alugados(c) > 0;
 }
 
 int main(void)
 {
     avl = avl_criar(func_compara, func_get_identidade, func_libera);
-
-    // Resultados possiveis
-    int valor_bloqueado = 0;
-    Decisao *resultado_bloqueado = decisao_criar_resultado(&valor_bloqueado);
-
-    int valor_inativo = 1;
-    Decisao *resultado_inativo = decisao_criar_resultado(&valor_inativo);
-
-    int valor_standard = 2;
-    Decisao *resultado_standard = decisao_criar_resultado(&valor_standard);
-
-    int valor_gold = 3;
-    Decisao *resultado_gold = decisao_criar_resultado(&valor_gold);
-
-    int valor_platinum = 4;
-    Decisao *resultado_platinum = decisao_criar_resultado(&valor_platinum);
-
-    int valor_elite = 5;
-    Decisao *resultado_elite = decisao_criar_resultado(&valor_elite);
-
-    int valor_risco_moderado = 6;
-    Decisao *resultado_risco_moderado = decisao_criar_resultado(&valor_risco_moderado);
-
-    int valor_alto_risco = 7;
-    Decisao *resultado_alto_risco = decisao_criar_resultado(&valor_alto_risco);
-
-    decisao = decisao_criar_verificador(
-        verifica_elite,
-        decisao_criar_verificador(
-            verifica_inadimplente,
-            decisao_criar_verificador(
-                verifica_acidentes,
-                decisao_criar_verificador(
-                    verifica_gasto_anual,
-                    decisao_criar_verificador(verifica_alugou, resultado_inativo, resultado_standard),
-                    decisao_criar_verificador(verifica_anos_cnh, resultado_gold, resultado_platinum)),
-                decisao_criar_verificador(verifica_idade, resultado_alto_risco, resultado_risco_moderado)),
-            resultado_bloqueado),
-        resultado_elite);
+    classificacao_inicializar();
 
     menu();
+
+    classificacao_liberar();
     return 0;
 }

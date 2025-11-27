@@ -13,7 +13,7 @@ typedef struct cliente
     int acidentes;
     float gastos;
     int dias_alugados;
-    int categoria;
+    ClienteCategoria categoria;
 
     FuncGetCategoria get_categoria;
 } Cliente;
