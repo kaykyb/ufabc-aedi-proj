@@ -17,7 +17,7 @@ Item *cria_item(int v)
     return i;
 }
 
-int func_compara(void *pa, void *pb)
+int compara(void *pa, void *pb)
 {
     char *a = (char *)pa;
     char *b = (char *)pb;
@@ -31,7 +31,7 @@ void *func_identidade(void *i)
     return str;
 }
 
-void func_libera(void *i)
+void libera(void *i)
 {
     free(i);
 }
@@ -50,7 +50,7 @@ void assert_estrutura(AVL *avl, char *esperado)
 
 void teste_criacao_vazia()
 {
-    AVL *avl = avl_criar(func_compara, func_identidade, func_libera);
+    AVL *avl = avl_criar(compara, func_identidade, libera);
     assert_estrutura(avl, "<>");
 
     avl_liberar(avl);
@@ -58,7 +58,7 @@ void teste_criacao_vazia()
 
 void teste_insercao_simples()
 {
-    AVL *avl = avl_criar(func_compara, func_identidade, func_libera);
+    AVL *avl = avl_criar(compara, func_identidade, libera);
 
     Item *i1 = cria_item(10);
     avl_inserir(avl, i1);
@@ -69,7 +69,7 @@ void teste_insercao_simples()
 
 void teste_insercao_multipla()
 {
-    AVL *avl = avl_criar(func_compara, func_identidade, func_libera);
+    AVL *avl = avl_criar(compara, func_identidade, libera);
 
     avl_inserir(avl, cria_item(2));
     avl_inserir(avl, cria_item(1));
@@ -81,7 +81,7 @@ void teste_insercao_multipla()
 
 void teste_balanceamento_rotacao_direita()
 {
-    AVL *avl = avl_criar(func_compara, func_identidade, func_libera);
+    AVL *avl = avl_criar(compara, func_identidade, libera);
 
     avl_inserir(avl, cria_item(3));
     avl_inserir(avl, cria_item(2));
@@ -93,7 +93,7 @@ void teste_balanceamento_rotacao_direita()
 
 void teste_balanceamento_rotacao_esquerda()
 {
-    AVL *avl = avl_criar(func_compara, func_identidade, func_libera);
+    AVL *avl = avl_criar(compara, func_identidade, libera);
 
     avl_inserir(avl, cria_item(1));
     avl_inserir(avl, cria_item(2));
@@ -105,7 +105,7 @@ void teste_balanceamento_rotacao_esquerda()
 
 void teste_busca()
 {
-    AVL *avl = avl_criar(func_compara, func_identidade, func_libera);
+    AVL *avl = avl_criar(compara, func_identidade, libera);
     Item *i1 = cria_item(5);
     Item *i2 = cria_item(2);
 
@@ -124,7 +124,7 @@ void teste_busca()
 
 void teste_balanceamento_rotacao_dupla_lr()
 {
-    AVL *avl = avl_criar(func_compara, func_identidade, func_libera);
+    AVL *avl = avl_criar(compara, func_identidade, libera);
 
     avl_inserir(avl, cria_item(30));
 
@@ -139,7 +139,7 @@ void teste_balanceamento_rotacao_dupla_lr()
 
 void teste_balanceamento_rotacao_dupla_rl()
 {
-    AVL *avl = avl_criar(func_compara, func_identidade, func_libera);
+    AVL *avl = avl_criar(compara, func_identidade, libera);
 
     avl_inserir(avl, cria_item(10));
 

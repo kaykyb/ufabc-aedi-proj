@@ -13,7 +13,7 @@ typedef struct cliente
     int acidentes;
     float gastos;
     int dias_alugados;
-    int categoria;
+    ClienteCategoria categoria;
 
     FuncGetCategoria get_categoria;
 } Cliente;
@@ -129,4 +129,27 @@ int cliente_dias_alugados(Cliente *c)
 int cliente_categoria(Cliente *c)
 {
     return c->categoria;
+}
+
+int cliente_print_categoria(Cliente *c)
+{
+    switch (c->categoria)
+    {
+    case CLIENTE_BLOQUEADO:
+        return printf("Bloqueado");
+    case CLIENTE_ALTO_RISCO:
+        return printf("Alto Risco");
+    case CLIENTE_RISCO_MODERADO:
+        return printf("Risco Moderado");
+    case CLIENTE_INATIVO:
+        return printf("Inativo");
+    case CLIENTE_STANDARD:
+        return printf("Standard");
+    case CLIENTE_GOLD:
+        return printf("Gold");
+    case CLIENTE_PLATINUM:
+        return printf("Platinum");
+    case CLIENTE_ELITE:
+        return printf("Elite");
+    }
 }

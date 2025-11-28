@@ -3,8 +3,19 @@
 #include <stdbool.h>
 
 typedef struct cliente Cliente;
+typedef enum
+{
+  CLIENTE_BLOQUEADO,
+  CLIENTE_ALTO_RISCO,
+  CLIENTE_RISCO_MODERADO,
+  CLIENTE_INATIVO,
+  CLIENTE_STANDARD,
+  CLIENTE_GOLD,
+  CLIENTE_PLATINUM,
+  CLIENTE_ELITE
+} ClienteCategoria;
 
-typedef int (*FuncGetCategoria)(Cliente *);
+typedef ClienteCategoria (*FuncGetCategoria)(Cliente *);
 
 Cliente *cliente_cria(char *cpf, int idade, int anos_cnh, bool inadimplente, int acidentes, float gastos, int dias_alugados, FuncGetCategoria get_categoria);
 void cliente_libera(Cliente *c);
@@ -24,5 +35,7 @@ int cliente_acidentes(Cliente *c);
 float cliente_gastos(Cliente *c);
 int cliente_dias_alugados(Cliente *c);
 int cliente_categoria(Cliente *c);
+
+int cliente_print_categoria(Cliente *c);
 
 #endif

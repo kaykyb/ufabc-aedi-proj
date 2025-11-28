@@ -6,7 +6,7 @@
 #include "../src/lib/cliente.h"
 
 static int categoria = 0;
-int func_categoria(Cliente *c)
+ClienteCategoria func_categoria(Cliente *c)
 {
     categoria++;
     return categoria;
