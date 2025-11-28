@@ -15,6 +15,10 @@ add_library(ufabc_aedi_proj_lib
 add_library(ufabc_aedi_proj_helpers
         src/classificacao.c
         src/classificacao.h
+        src/armazenamento.c
+        src/armazenamento.h
+        src/validacao.c
+        src/validacao.h
 )
 
 add_executable(ufabc_aedi_proj src/main.c)

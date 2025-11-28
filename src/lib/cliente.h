@@ -36,4 +36,6 @@ float cliente_gastos(Cliente *c);
 int cliente_dias_alugados(Cliente *c);
 int cliente_categoria(Cliente *c);
 
+int cliente_print_categoria(Cliente *c);
+
 #endif

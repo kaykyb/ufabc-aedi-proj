@@ -2,14 +2,14 @@
 #include "lib/decisao.h"
 
 static Decisao *decisao;
-static int valor_bloqueado = 0;
-static int valor_inativo = 1;
-static int valor_standard = 2;
-static int valor_gold = 3;
-static int valor_platinum = 4;
-static int valor_elite = 5;
-static int valor_risco_moderado = 6;
-static int valor_alto_risco = 7;
+static int valor_bloqueado = CLIENTE_BLOQUEADO;
+static int valor_inativo = CLIENTE_INATIVO;
+static int valor_standard = CLIENTE_STANDARD;
+static int valor_gold = CLIENTE_GOLD;
+static int valor_platinum = CLIENTE_PLATINUM;
+static int valor_elite = CLIENTE_ELITE;
+static int valor_risco_moderado = CLIENTE_RISCO_MODERADO;
+static int valor_alto_risco = CLIENTE_ALTO_RISCO;
 
 // Classificadores
 bool verifica_elite(void *elem)

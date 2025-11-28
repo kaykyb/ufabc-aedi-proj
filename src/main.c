@@ -5,32 +5,9 @@
 
 #include "lib/avl.h"
 #include "lib/cliente.h"
-#include "classificacao.h"
+#include "armazenamento.h"
+#include "validacao.h"
 
-// Armazenamento de Clientes
-static AVL *avl;
-
-int func_compara(void *pa, void *pb)
-{
-    char *a = (char *)pa;
-    char *b = (char *)pb;
-    return strcmp(a, b);
-}
-
-void *func_get_identidade(void *elem)
-{
-    char *cpf_original = cliente_cpf(elem);
-    char *cpf_copia = malloc(sizeof(char) * 12);
-    strcpy(cpf_copia, cpf_original);
-    return cpf_copia;
-}
-
-void func_libera(void *elem)
-{
-    cliente_libera(elem);
-}
-
-// Helpers
 void clear(void)
 {
     printf("\033[2J\033[H");
@@ -61,25 +38,214 @@ void stop_pressione_continuar()
     getchar();
 }
 
-bool checa_cpf_valido(char *cpf)
+// Interface
+int editor(Cliente *c)
 {
-    for (int i = 0; i < 11; i++)
-        if (cpf[i] < '0' || cpf[i] > '9')
-            return false;
+    printf("\n=================================================\n");
+    printf("Opções:\n");
+    printf("[I] Alterar Idade         [C] Alterar Anos de CNH\n");
+    printf("[P] Alterar Inadimplente  [A] Alterar Acidentes\n");
+    printf("[G] Alterar Gastos        [D] Alterar D. Alugados\n");
+    printf("[V] Voltar ao menu\n");
+    printf("-------------------------------------------------\n");
+    printf("Digite a opcao: ");
 
-    return true;
+    char opcao;
+    scanf(" %c", &opcao);
+    limpar_buffer_entrada();
+
+    if (opcao == 'V' || opcao == 'v')
+    {
+        return 0;
+    }
+
+    if (opcao == 'I' || opcao == 'i')
+    {
+        int nova_idade;
+        printf("Nova idade: ");
+        if (scanf("%d", &nova_idade) != 1)
+        {
+            printf("Erro: Entrada invalida.\n");
+            limpar_buffer_entrada();
+            stop_pressione_continuar();
+            return 1;
+        }
+        limpar_buffer_entrada();
+
+        if (!valida_idade(nova_idade))
+        {
+            printf("Erro: Idade deve estar entre 18 e 120 anos.\n");
+            stop_pressione_continuar();
+            return 1;
+        }
+
+        if (cliente_anos_cnh(c) > (nova_idade - 18))
+        {
+            printf("Erro: Anos de CNH (%d) incompativel com a nova idade.\n", cliente_anos_cnh(c));
+            stop_pressione_continuar();
+            return 1;
+        }
+
+        cliente_atualiza_idade(c, nova_idade);
+        return 1;
+    }
+
+    if (opcao == 'C' || opcao == 'c')
+    {
+        int novos_anos_cnh;
+        printf("Novos anos de CNH: ");
+        if (scanf("%d", &novos_anos_cnh) != 1)
+        {
+            printf("Erro: Entrada invalida.\n");
+            limpar_buffer_entrada();
+            stop_pressione_continuar();
+            return 1;
+        }
+        limpar_buffer_entrada();
+
+        if (!valida_anos_cnh(novos_anos_cnh, cliente_idade(c)))
+        {
+            printf("Erro: Anos de CNH invalido.\n");
+            stop_pressione_continuar();
+            return 1;
+        }
+
+        cliente_atualiza_anos_cnh(c, novos_anos_cnh);
+        return 1;
+    }
+
+    if (opcao == 'P' || opcao == 'p')
+    {
+        int inadimplente;
+        printf("Inadimplente? (1 para sim, 0 para nao): ");
+        if (scanf("%d", &inadimplente) != 1)
+        {
+            printf("Erro: Entrada invalida.\n");
+            limpar_buffer_entrada();
+            stop_pressione_continuar();
+            return 1;
+        }
+        limpar_buffer_entrada();
+
+        if (!valida_inadimplente(inadimplente))
+        {
+            printf("Erro: Valor deve ser 0 ou 1.\n");
+            stop_pressione_continuar();
+            return 1;
+        }
+
+        cliente_atualiza_inadimplente(c, inadimplente);
+        return 1;
+    }
+
+    if (opcao == 'A' || opcao == 'a')
+    {
+        int novos_acidentes;
+        printf("Novo numero de acidentes: ");
+        if (scanf("%d", &novos_acidentes) != 1)
+        {
+            printf("Erro: Entrada invalida.\n");
+            limpar_buffer_entrada();
+            stop_pressione_continuar();
+            return 1;
+        }
+        limpar_buffer_entrada();
+
+        if (!valida_acidentes(novos_acidentes))
+        {
+            printf("Erro: Numero de acidentes nao pode ser negativo.\n");
+            stop_pressione_continuar();
+            return 1;
+        }
+
+        cliente_atualiza_acidentes(c, novos_acidentes);
+        return 1;
+    }
+
+    if (opcao == 'G' || opcao == 'g')
+    {
+        float novos_gastos;
+        printf("Novos gastos: ");
+        if (scanf("%f", &novos_gastos) != 1)
+        {
+            printf("Erro: Entrada invalida.\n");
+            limpar_buffer_entrada();
+            stop_pressione_continuar();
+            return 1;
+        }
+        limpar_buffer_entrada();
+
+        if (!valida_gastos(novos_gastos))
+        {
+            printf("Erro: Gastos nao podem ser negativos.\n");
+            stop_pressione_continuar();
+            return 1;
+        }
+
+        cliente_atualiza_gastos(c, novos_gastos);
+        return 1;
+    }
+
+    if (opcao == 'D' || opcao == 'd')
+    {
+        int novos_dias;
+        printf("Novos dias alugados: ");
+        if (scanf("%d", &novos_dias) != 1)
+        {
+            printf("Erro: Entrada invalida.\n");
+            limpar_buffer_entrada();
+            stop_pressione_continuar();
+            return 1;
+        }
+        limpar_buffer_entrada();
+
+        if (!valida_dias_alugados(novos_dias))
+        {
+            printf("Erro: Dias de aluguel deve estar entre 0 e 366.\n");
+            stop_pressione_continuar();
+            return 1;
+        }
+
+        cliente_atualiza_dias_alugados(c, novos_dias);
+        return 1;
+    }
+
+    printf("Opcao invalida!\n");
+    stop_pressione_continuar();
+    return 1;
 }
 
-// Interface
 void visualizar_cliente(Cliente *c)
 {
-    clear();
-    header("Visualizar Cliente");
+    do
+    {
+        clear();
+        header("Visualizar Cliente");
 
-    printf("CPF:                  %s\n", cliente_cpf(c));
-    printf("Categoria do Cliente: %d\n", cliente_categoria(c));
+        printf("CPF:                  %s\n", cliente_cpf(c));
+        printf("Categoria do Cliente: ");
+        cliente_print_categoria(c);
+        printf("\n");
 
-    stop_pressione_continuar();
+        printf("-------------------------------------------------\n");
+
+        printf("Idade:                %d anos\n", cliente_idade(c));
+        printf("Anos de CNH:          %d anos\n", cliente_anos_cnh(c));
+
+        printf("Inadimplente:         ");
+        if (cliente_inadimplente(c))
+        {
+            printf("Sim\n");
+        }
+        else
+        {
+            printf("Nao\n");
+        }
+
+        printf("Acidentes:            %d\n", cliente_acidentes(c));
+        printf("Gastos:               R$ %.2f\n", cliente_gastos(c));
+        printf("Dias Alugados no Ano: %d dias\n", cliente_dias_alugados(c));
+    } while (editor(c));
 }
 
 void adicionar_cliente()
@@ -93,14 +259,14 @@ void adicionar_cliente()
     fgets(cpf, 12, stdin);
     limpar_buffer_entrada();
 
-    if (!checa_cpf_valido(cpf))
+    if (!valida_cpf(cpf))
     {
         printf("Erro: CPF invalido.\n");
         stop_pressione_continuar();
         return;
     }
 
-    if (avl_buscar(avl, cpf))
+    if (armazenamento_buscar_cliente(cpf))
     {
         printf("Erro: Cliente ja existe no banco de dados...");
         stop_pressione_continuar();
@@ -109,39 +275,115 @@ void adicionar_cliente()
 
     int idade;
     printf("Idade: ");
-    scanf("%d", &idade);
+    if (scanf("%d", &idade) != 1)
+    {
+        printf("Erro: Entrada invalida para idade.\n");
+        limpar_buffer_entrada();
+        stop_pressione_continuar();
+        return;
+    }
+
+    if (!valida_idade(idade))
+    {
+        printf("Erro: Idade deve estar entre 18 e 120 anos.\n");
+        limpar_buffer_entrada();
+        stop_pressione_continuar();
+        return;
+    }
 
     int anos_cnh;
     printf("Anos de CNH permanente: ");
-    scanf("%d", &anos_cnh);
+    if (scanf("%d", &anos_cnh) != 1)
+    {
+        printf("Erro: Entrada invalida para anos de CNH.\n");
+        limpar_buffer_entrada();
+        stop_pressione_continuar();
+        return;
+    }
+    if (!valida_anos_cnh(anos_cnh, idade))
+    {
+        printf("Erro: Anos de CNH invalido.\n");
+        limpar_buffer_entrada();
+        stop_pressione_continuar();
+        return;
+    }
 
     int inadimplente;
     printf("O cliente esta inadimplente? (1 para sim, 0 para nao): ");
-    scanf("%d", &inadimplente);
-
-    if (inadimplente < 0 || inadimplente > 1)
+    if (scanf("%d", &inadimplente) != 1)
     {
-        printf("Erro: Inadimplente deve ser '0' ou '1'...");
+        printf("Erro: Entrada invalida para inadimplente.\n");
+        limpar_buffer_entrada();
+        stop_pressione_continuar();
+        return;
+    }
+    if (!valida_inadimplente(inadimplente))
+    {
+        printf("Erro: Inadimplente deve ser '0' ou '1'.\n");
+        limpar_buffer_entrada();
         stop_pressione_continuar();
         return;
     }
 
     int acidentes;
     printf("Numero de acidentes causados: ");
-    scanf("%d", &acidentes);
+    if (scanf("%d", &acidentes) != 1)
+    {
+        printf("Erro: Entrada invalida para numero de acidentes.\n");
+        limpar_buffer_entrada();
+        stop_pressione_continuar();
+        return;
+    }
+    if (!valida_acidentes(acidentes))
+    {
+        printf("Erro: Numero de acidentes nao pode ser negativo.\n");
+        limpar_buffer_entrada();
+        stop_pressione_continuar();
+        return;
+    }
 
     float gastos;
     printf("Gastos na loja neste ano: ");
-    scanf("%f", &gastos);
+    if (scanf("%f", &gastos) != 1)
+    {
+        printf("Erro: Entrada invalida para gastos.\n");
+        limpar_buffer_entrada();
+        stop_pressione_continuar();
+        return;
+    }
+    if (!valida_gastos(gastos))
+    {
+        printf("Erro: Gastos nao podem ser negativos.\n");
+        limpar_buffer_entrada();
+        stop_pressione_continuar();
+        return;
+    }
 
     int dias_alugados;
     printf("Dias de aluguel neste ano: ");
-    scanf("%d", &dias_alugados);
+    if (scanf("%d", &dias_alugados) != 1)
+    {
+        printf("Erro: Entrada invalida para dias de aluguel.\n");
+        limpar_buffer_entrada();
+        stop_pressione_continuar();
+        return;
+    }
+    if (!valida_dias_alugados(dias_alugados))
+    {
+        printf("Erro: Dias de aluguel deve estar entre 0 e 366.\n");
+        limpar_buffer_entrada();
+        stop_pressione_continuar();
+        return;
+    }
     getchar();
 
-    Cliente *c = cliente_cria(cpf, idade, anos_cnh, inadimplente, acidentes, gastos, dias_alugados, classificacao_get_categoria);
-    avl_inserir(avl, c);
-
+    Cliente *c = armazenamento_criar_cliente(cpf, idade, anos_cnh, inadimplente, acidentes, gastos, dias_alugados);
+    if (!c)
+    {
+        printf("Erro: Falha ao criar cliente no banco de dados.\n");
+        stop_pressione_continuar();
+        return;
+    }
     visualizar_cliente(c);
 }
 
@@ -156,14 +398,14 @@ void buscar_cliente()
     fgets(cpf, 12, stdin);
     limpar_buffer_entrada();
 
-    if (!checa_cpf_valido(cpf))
+    if (!valida_cpf(cpf))
     {
         printf("Erro: CPF invalido.\n");
         stop_pressione_continuar();
         return;
     }
 
-    Cliente *c = avl_buscar(avl, cpf);
+    Cliente *c = armazenamento_buscar_cliente(cpf);
     if (c)
     {
         visualizar_cliente(c);
@@ -185,6 +427,7 @@ void menu(void)
     printf("    MENU\n");
     printf("[1] Adicionar Cliente\n");
     printf("[2] Buscar Cliente\n");
+    printf("[3] Sair do Programa\n");
     printf("\n");
     printf("Digite o Número da Opção: ");
 
@@ -200,17 +443,20 @@ void menu(void)
     {
         buscar_cliente();
     }
+    else if (op == 3)
+    {
+        return;
+    }
 
     menu();
 }
 
 int main(void)
 {
-    avl = avl_criar(func_compara, func_get_identidade, func_libera);
-    classificacao_inicializar();
+    armazenamento_inicializar();
 
     menu();
 
-    classificacao_liberar();
+    armazenamento_liberar();
     return 0;
 }
