@@ -24,6 +24,7 @@ add_library(ufabc_aedi_proj_helpers
 add_executable(ufabc_aedi_proj src/main.c)
 target_link_libraries(ufabc_aedi_proj PRIVATE ufabc_aedi_proj_lib)
 target_link_libraries(ufabc_aedi_proj PRIVATE ufabc_aedi_proj_helpers)
+target_link_libraries(ufabc_aedi_proj_helpers PRIVATE ufabc_aedi_proj_lib)
 
 enable_testing()
 
